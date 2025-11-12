@@ -159,7 +159,7 @@ async def play_commnd(
     elif url:
         if await YouTube.exists(url):
             if "playlist" in url:
-                # YouTube playlist disabled - silently ignore
+                
                 return await mystic.delete()
             else:
                 try:
@@ -543,7 +543,7 @@ async def play_playlists_command(client, CallbackQuery, _):
     ffplay = True if fplay == "f" else None
     spotify = True
     if ptype == "yt":
-        # YouTube playlist disabled via callback - silently ignore
+        
         return await mystic.delete()
     if ptype == "spplay":
         try:
@@ -649,3 +649,4 @@ async def slider_queries(client, CallbackQuery, _):
         return await CallbackQuery.edit_message_media(
             media=med, reply_markup=InlineKeyboardMarkup(buttons)
         )
+
