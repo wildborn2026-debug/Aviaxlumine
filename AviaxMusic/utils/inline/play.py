@@ -68,7 +68,7 @@ def stream_markup_timer(_, chat_id, played, dur):
         ],
         [
             InlineKeyboardButton(
-                text="➕ Add me in Your Group",
+                text="Add me in Your Group",
                 url="https://t.me/Lumine_Roxbot?start"
             )
         ],
@@ -166,3 +166,4 @@ def slider_markup(_, videoid, user_id, query, query_type, channel, fplay):
         ],
     ]
     return buttons
+
