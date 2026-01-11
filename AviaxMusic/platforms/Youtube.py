@@ -16,6 +16,7 @@ import random
 import logging
 import aiohttp
 import config
+from AviaxMusic import LOGGER
 from config import API_URL, VIDEO_API_URL, API_KEY
 
 YOUR_API_URL = None
@@ -361,3 +362,4 @@ class YouTubeAPI:
                 return None, False
         except Exception:
             return None, False
+
