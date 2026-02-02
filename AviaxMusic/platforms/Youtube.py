@@ -17,7 +17,6 @@ import logging
 import aiohttp
 import config
 from AviaxMusic import LOGGER
-from config import API_URL, VIDEO_API_URL, API_KEY
 
 YOUR_API_URL = None
 FALLBACK_API_URL = "https://shrutibots.site"
@@ -362,4 +361,5 @@ class YouTubeAPI:
                 return None, False
         except Exception:
             return None, False
+
 
