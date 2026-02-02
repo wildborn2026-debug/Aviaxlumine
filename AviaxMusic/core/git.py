@@ -1,3 +1,4 @@
+import os
 import asyncio
 import shlex
 from typing import Tuple
@@ -69,3 +70,4 @@ def git():
             repo.git.reset("--hard", "FETCH_HEAD")
         install_req("pip3 install --no-cache-dir -r requirements.txt")
         LOGGER(__name__).info(f"Fetching updates from upstream repository...")
+
