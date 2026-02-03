@@ -2,7 +2,7 @@ import time
 
 from pyrogram import filters
 from pyrogram.enums import ChatType
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, ChatMemberUpdated
 from youtubesearchpython.__future__ import VideosSearch
 
 import config
@@ -31,6 +31,24 @@ async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
+        
+        # Handle promotional link (e.g., ?start=group or ?start=promo)
+        if name in ["group", "promo"]:
+            # Same normal start flow for promotional links
+            out = private_panel(_)
+            UP, CPU, RAM, DISK = await bot_sys_stats()
+            await message.reply_photo(
+                photo=config.START_IMG_URL,
+                caption=_["start_2"].format(message.from_user.mention, app.mention, UP, DISK, CPU, RAM),
+                reply_markup=InlineKeyboardMarkup(out),
+            )
+            if await is_on_off(2):
+                return await app.send_message(
+                    chat_id=config.LOG_GROUP_ID,
+                    text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴠɪᴀ ᴘʀᴏᴍᴏᴛɪᴏɴᴀʟ ʟɪɴᴋ.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
+                )
+            return
+        
         if name[0:4] == "help":
             keyboard = help_pannel(_)
             return await message.reply_photo(
@@ -150,6 +168,53 @@ async def welcome(client, message: Message):
                     reply_markup=InlineKeyboardMarkup(out),
                 )
                 await add_served_chat(message.chat.id)
+                
+                chat_link = None
+                if hasattr(message.chat, 'username') and message.chat.username:
+                    chat_link = f"https://t.me/{message.chat.username}"
+                elif hasattr(message.chat, 'invite_link') and message.chat.invite_link:
+                    chat_link = message.chat.invite_link
+                
+                await app.send_message(
+                    config.LOG_GROUP_ID,
+                    text=f"<b>Bot Added to New Group</b>\n\n"
+                         f"<b>Added By:</b> {message.from_user.mention}\n"
+                         f"<b>Username:</b> @{message.from_user.username if message.from_user.username else 'None'}\n"
+                         f"<b>User ID:</b> <code>{message.from_user.id}</code>\n\n"
+                         f"<b>Group Name:</b> {message.chat.title}\n"
+                         f"<b>Group ID:</b> <code>{message.chat.id}</code>\n"
+                         f"<b>Group Link:</b> {chat_link if chat_link else 'None'}",
+                    disable_web_page_preview=True,
+                )
+                
                 await message.stop_propagation()
         except Exception as ex:
             print(ex)
+
+
+@app.on_message(filters.left_chat_member)
+async def bot_left_group(client, message: Message):
+    try:
+        if message.left_chat_member.id == app.id:
+            chat = message.chat
+            removed_by = message.from_user
+            
+            chat_link = None
+            if hasattr(chat, 'username') and chat.username:
+                chat_link = f"https://t.me/{chat.username}"
+            elif hasattr(chat, 'invite_link') and chat.invite_link:
+                chat_link = chat.invite_link
+            
+            await app.send_message(
+                config.LOG_GROUP_ID,
+                text=f"<b>Bot Removed from Group</b>\n\n"
+                     f"<b>Removed By:</b> {removed_by.mention if removed_by else 'Unknown'}\n"
+                     f"<b>Username:</b> @{removed_by.username if removed_by and removed_by.username else 'None'}\n"
+                     f"<b>User ID:</b> <code>{removed_by.id if removed_by else 'Unknown'}</code>\n\n"
+                     f"<b>Group Name:</b> {chat.title}\n"
+                     f"<b>Group ID:</b> <code>{chat.id}</code>\n"
+                     f"<b>Group Link:</b> {chat_link if chat_link else 'None'}",
+                disable_web_page_preview=True,
+            )
+    except Exception as e:
+        print(f"Error in left group logger: {e}")
