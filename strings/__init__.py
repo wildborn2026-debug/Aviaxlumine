@@ -12,23 +12,23 @@ def get_string(lang: str):
  
  
 for filename in os.listdir(r"./strings/langs/"): 
-    if "my" not in languages:  
+    if "my" not in languages:
         languages["my"] = yaml.safe_load( 
-            open(r"./strings/langs/my.yml", encoding="utf8")  
+            open(r"./strings/langs/my.yml", encoding="utf8")
         ) 
-        languages_present["my"] = languages["my"]["name"]  
+        languages_present["my"] = languages["my"]["name"]
     if filename.endswith(".yml"): 
         language_name = filename[:-4] 
-        if language_name == "my":  
+        if language_name == "my":
             continue 
         languages[language_name] = yaml.safe_load( 
             open(r"./strings/langs/" + filename, encoding="utf8") 
         ) 
-        for item in languages["my"]:  
+        for item in languages["my"]:
             if item not in languages[language_name]: 
-                languages[language_name][item] = languages["my"][item]  
-    try: 
-        languages_present[language_name] = languages[language_name]["name"] 
-    except: 
-        print("There is some issue with the language file inside bot.") 
-        exit()
+                languages[language_name][item] = languages["my"][item]
+        try:  # ← Yeh line INDENT karni thi
+            languages_present[language_name] = languages[language_name]["name"] 
+        except: 
+            print("There is some issue with the language file inside bot.") 
+            exit()
