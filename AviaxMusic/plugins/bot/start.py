@@ -86,7 +86,7 @@ async def start_pm(client, message: Message, _):
                 )
             return
     
-    # Normal start message for all cases (including promotional links)
+    
     out = private_panel(_)
     UP, CPU, RAM, DISK = await bot_sys_stats()
     await message.reply_photo(
@@ -202,3 +202,4 @@ async def bot_left_group(client, message: Message):
             )
     except Exception as e:
         print(f"Error in left group logger: {e}")
+
